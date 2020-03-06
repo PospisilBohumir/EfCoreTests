@@ -25,6 +25,7 @@ namespace EfCoreTests
             var options = builder.UseLazyLoadingProxies().Options;
             using (var ctx = new TestContext(options))
             {
+                ctx.TestEntities.RemoveRange(ctx.TestEntities.ToArray());
                 ctx.TestEntities.Add(new TestEntity());
                 ctx.SaveChanges();
             }
