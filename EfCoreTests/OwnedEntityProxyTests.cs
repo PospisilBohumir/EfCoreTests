@@ -1,4 +1,5 @@
 using System.Linq;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -20,9 +21,22 @@ namespace EfCoreTests
                 .UseSqlServer("Data Source=.;MultipleActiveResultSets=True;Integrated Security=True")));
         }
 
+        [Fact]
+        public void SqliteTest()
+        {
+            using var connection = new SqliteConnection("DataSource=:memory:");
+            connection.Open();
+            Assert.True(Test(new DbContextOptionsBuilder<TestContext>()
+                .UseSqlite(connection)));
+        }
+
         private static bool Test(DbContextOptionsBuilder<TestContext> builder)
         {
             var options = builder.UseLazyLoadingProxies().Options;
+            using (var ctx = new TestContext(options))
+            {
+                ctx.Database.EnsureCreated();
+            }
             using (var ctx = new TestContext(options))
             {
                 ctx.TestEntities.RemoveRange(ctx.TestEntities.ToArray());
