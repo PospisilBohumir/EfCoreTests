@@ -71,8 +71,20 @@ namespace EfCoreTests
 
     public class TestEntity
     {
+        private TestOwnedEntity _testOwnedEntity;
         public long Id { get; set; }
-        public virtual TestOwnedEntity TestOwnedEntity { get; private set; } = new TestOwnedEntity();
+        public virtual TestOwnedEntity TestOwnedEntity
+        {
+            get
+            {
+                if (_testOwnedEntity == null)
+                {
+                    _testOwnedEntity = new TestOwnedEntity();
+                }
+                return _testOwnedEntity;
+            }
+            private set { _testOwnedEntity = value; }
+        }
     }
 
     [Owned]
